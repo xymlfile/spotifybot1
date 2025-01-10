@@ -14,8 +14,9 @@ WORKDIR /usr/src/app
 # Copy the requirements.txt into the container
 COPY . .
 
-# Install Python dependencies from requirements.txt
-RUN pip3 install --no-cache-dir -r requirements.txt
+RUN python -m ensurepip --upgrade && \
+    pip install --no-cache-dir -r requirements.txt
+
 
 
 # Expose the Selenium WebDriver port
