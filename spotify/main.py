@@ -10,6 +10,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 import names
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 passw = """Beliver123@"""
 chromedriver_autoinstaller.install()
@@ -73,7 +74,7 @@ def MN(dr):
     time.sleep(50)
 ass = []
 def bcapwadder():
-    with open('spotify/acts.txt', 'r') as file:
+    with open(r'C:\Users\rudra\Documents\GitHub\spotifybot1\spotify\acts.txt', 'r') as file:
         # Read the lines of the file
         lines = file.readlines()
         for line in lines:
@@ -82,7 +83,8 @@ def bcapwadder():
             bcacpw[key] = value
 bcapwadder()
 for i in acpw:
-    globals()[f"driver{i}"] = webdriver.Chrome(options=options)
+    globals()[f"driver{i}"] = webdriver.Remote("http://127.0.0.1:4444/wd/hub", DesiredCapabilities.CHROME, options= options)
+
 
 
 for i in acpw:
