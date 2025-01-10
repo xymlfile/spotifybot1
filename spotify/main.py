@@ -27,7 +27,6 @@ options.add_experimental_option("useAutomationExtension", False)
 options.add_argument('--blink-settings=imagesEnabled=false')
 
 
-
 def MN(dr):
     actions = ActionChains( globals()[dr])
     globals()[dr].get(
