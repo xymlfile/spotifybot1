@@ -81,6 +81,7 @@ def bcapwadder():
             key = line
             value = passw
             bcacpw[key] = value
+
 bcapwadder()
 for i in acpw:
     globals()[f"driver{i}"] = webdriver.Remote("http://127.0.0.1:4444/wd/hub", DesiredCapabilities.CHROME, options= options)
