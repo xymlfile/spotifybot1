@@ -30,12 +30,11 @@ RUN apt-get update -y && apt-get install -y \
     libdbus-1-3 \
     && apt-get clean
 
-# Install Google Chrome
-RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && DISTRO=$(lsb_release -c | awk '{print $2}') \
-    && echo "deb [arch=amd64] https://dl.google.com/linux/chrome/deb/ $DISTRO main" > /etc/apt/sources.list.d/google-chrome.list \
-    && apt-get update -y \
-    && apt-get install -y google-chrome-stable \
+# Install Google Chrome using the stable repository (new method)
+RUN curl -sSL https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -o /tmp/google-chrome.deb \
+    && dpkg -i /tmp/google-chrome.deb \
+    && apt-get install -f -y \
+    && rm /tmp/google-chrome.deb \
     && apt-get clean
 
 # Install Python dependencies for Selenium
