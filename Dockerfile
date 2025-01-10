@@ -7,7 +7,11 @@ RUN apt-get update -y && apt-get install -y \
     python3 \
     python3-pip \
     python3-venv \
+    curl \
     && apt-get clean
+
+RUN curl -o /usr/local/bin/wait-for-it https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh \
+    && chmod +x /usr/local/bin/wait-for-it
 
 # Set the working directory inside the container
 WORKDIR /usr/src/app
