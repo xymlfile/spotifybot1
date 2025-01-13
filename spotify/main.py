@@ -84,8 +84,7 @@ def bcapwadder():
 
 bcapwadder()
 for i in acpw:
-    globals()[f"driver{i}"] = webdriver.Remote("http://127.0.0.1:4444/wd/hub", DesiredCapabilities.CHROME, options= options)
-
+    globals()[f"driver{i}"] = webdriver.Chrome(options)
 
 
 for i in acpw:
