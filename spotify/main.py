@@ -17,7 +17,7 @@ chromedriver_autoinstaller.install()
 
 options = ChromeOptions()
 mobile_emulation = { "deviceName": "Nexus 5" }
-
+options.addArguments("--no-sandbox");
 options.add_experimental_option("mobileEmulation", mobile_emulation)
 options.add_argument("disable-infobars");
 options.add_argument("--disable-blink-features=AutomationControlled")
