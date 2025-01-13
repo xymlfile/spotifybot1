@@ -4,28 +4,15 @@ FROM selenium/standalone-chrome:latest
 # Switch to root to install dependencies
 USER root
 
-# Install Python, pip, and other necessary dependencies for Selenium and other tools
+# Update and install dependencies in separate steps to identify issues more clearly
 RUN apt-get update -y && apt-get install -y \
-    python3 \
-    python3-pip \
-    python3-venv \
-    curl \
-    wget \
-    unzip \
-    ca-certificates \
-    fonts-liberation \
-    libappindicator3-1 \
-    libnss3 \
-    libxss1 \
-    libgbm-dev \
-    libasound2 \
-    libatk-bridge2.0-0 \
-    libatk1.0-0 \
-    libgdk-pixbuf2.0-0 \
-    libgtk-3-0 \
-    xdg-utils \
-    xvfb \
-    && apt-get clean
+    python3 python3-pip python3-venv && apt-get clean
+
+RUN apt-get update -y && apt-get install -y \
+    curl wget unzip ca-certificates fonts-liberation \
+    libappindicator3-1 libnss3 libxss1 libgbm-dev \
+    libasound2 libatk-bridge2.0-0 libatk1.0-0 \
+    libgdk-pixbuf2.0-0 libgtk-3-0 xdg-utils xvfb && apt-get clean
 
 # Install Google Chrome (latest version)
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
