@@ -76,7 +76,7 @@ def MN(dr):
     time.sleep(50)
 ass = []
 def bcapwadder():
-    with open('spotify/acts.txt', 'r') as file:
+    with open(r'spotify/acts.txt', 'r') as file:
         # Read the lines of the file
         lines = file.readlines()
         for line in lines:
