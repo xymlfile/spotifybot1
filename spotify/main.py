@@ -1,5 +1,7 @@
 from selenium.common.exceptions import ElementNotInteractableException, NoSuchElementException, ElementClickInterceptedException
 from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import time
 from lolo import acpw, bcacpw, strlist, playlists
 from selenium import webdriver
@@ -10,22 +12,22 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 import names
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 passw = """Beliver123@"""
 chromedriver_autoinstaller.install()
 
 options = ChromeOptions()
-mobile_emulation = { "deviceName": "Nexus 5" }
-options.addArguments("--no-sandbox");
+mobile_emulation = { "deviceName": "Nexus 6P" }
+
 options.add_experimental_option("mobileEmulation", mobile_emulation)
 options.add_argument("disable-infobars");
 options.add_argument("--disable-blink-features=AutomationControlled")
 options.add_experimental_option("excludeSwitches", ["enable-automation"])
-# options.add_argument('--headless=new')
+options.add_argument('--headless=new')
 # options.page_load_strategy = 'eager'
 options.add_experimental_option("useAutomationExtension", False)
 options.add_argument('--blink-settings=imagesEnabled=false')
+
 
 
 def MN(dr):
@@ -74,17 +76,16 @@ def MN(dr):
     time.sleep(50)
 ass = []
 def bcapwadder():
-    with open(r'spotify/acts.txt', 'r') as file:
+    with open('acts.txt', 'r') as file:
         # Read the lines of the file
         lines = file.readlines()
         for line in lines:
             key = line
             value = passw
             bcacpw[key] = value
-
 bcapwadder()
 for i in acpw:
-    globals()[f"driver{i}"] = webdriver.Chrome(options)
+    globals()[f"driver{i}"] = webdriver.Chrome(options=options)
 
 
 for i in acpw:
@@ -122,9 +123,8 @@ while True:
     for i in acpw:
         playlistlink = random.choice(playlists)
         try:
-            globals()[f"driver{i}"].get("https://open.spotify.com/playlist/1WzuaRUxekhPMBZEsszcSe")
-            print(1)
-            globals()[f"driver{i}"].get(playlistlink)
+            time.sleep(3)
+            globals()[f"driver{i}"].get("https://open.spotify.com/playlist/3BRu1lU97T7uqzZsLDn7e3?si=b7955084bf65451d")
 
         except TimeoutError:
             print("t")
@@ -138,25 +138,19 @@ while True:
         for i in acpw:
                 g = random.randint(1, 6)
                 songsnumberarr.append(g)
-                try:
-                    b = globals()[f"driver{i}"].find_element(By.XPATH,
-                                                         f"""//*[@id="main"]/div/div/div/div/div[2]/div[1]/div[2]/div/div[1]/div[{g}]/div/div[1]""")
-                    try:
-                     globals()[f"driver{i}"].execute_script("arguments[0].click();", b)
-                    except WebDriverException:
-                        print("element detached")
-                    except NoSuchElementException:
-                        globals()[f"driver{i}"].get(playlistlink)
 
-                except NoSuchElementException:
-                    print("play buttton not found", b)
-                    l = True
-                    break
-                except ElementClickInterceptedException as e:
-                    print(e)
-                except NoSuchElementException:
-                    globals()[f"driver{i}"].get(playlistlink)
-                except ElementNotInteractableException:
-                    print("play button not interactable")
+                # try:
+                b = WebDriverWait(globals()[f"driver{i}"], 20).until(
+                    EC.visibility_of_element_located((By.XPATH, f"""/html/body/div[1]/div/div/div/div/div[2]/div/div[2]/div/div[1]/div[{g}]/div/div[1]""")))
+
+                globals()[f"driver{i}"].execute_script("arguments[0].click();", b)
+
+                # except NoSuchElementException:
+                #    print("play buttton not found", b)
+                #    l = True
+                #    break
+                # except ElementClickInterceptedException as e:
+                #      print(e)
+                #
         print(songsnumberarr)
-        time.sleep(10)
+        time.sleep(100)
