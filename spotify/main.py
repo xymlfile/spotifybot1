@@ -1,4 +1,4 @@
-from selenium.common.exceptions import ElementNotInteractableException, NoSuchElementException, ElementClickInterceptedException
+from selenium.common.exceptions import ElementNotInteractableException, NoSuchElementException, ElementClickInterceptedException, StaleElementReferenceException
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -23,7 +23,7 @@ options.add_experimental_option("mobileEmulation", mobile_emulation)
 options.add_argument("disable-infobars");
 options.add_argument("--disable-blink-features=AutomationControlled")
 options.add_experimental_option("excludeSwitches", ["enable-automation"])
-options.add_argument('--headless=new')
+# options.add_argument('--headless=new')
 # options.page_load_strategy = 'eager'
 options.add_experimental_option("useAutomationExtension", False)
 options.add_argument('--blink-settings=imagesEnabled=false')
@@ -76,7 +76,7 @@ def MN(dr):
     time.sleep(50)
 ass = []
 def bcapwadder():
-    with open(r'spotify/acts.txt', 'r') as file:
+    with open(r'acts.txt', 'r') as file:
         # Read the lines of the file
         lines = file.readlines()
         for line in lines:
@@ -87,8 +87,9 @@ bcapwadder()
 for i in acpw:
     globals()[f"driver{i}"] = webdriver.Chrome(options=options)
 
-
+x = 0
 for i in acpw:
+    x += 1
     globals()[f"driver{i}"].maximize_window()
     globals()[f"driver{i}"].get("https://accounts.spotify.com/en/login")
     globals()[f"driver{i}"].find_element(By.ID, "login-username").send_keys(i)
@@ -98,13 +99,17 @@ for i in acpw:
 
     time.sleep(5)
     if globals()[f"driver{i}"].current_url == "https://accounts.spotify.com/en/login":
-        print(i, "not logged in")
+        print(x, "Started")
         for b in bcacpw:
-            globals()[f"driver{i}"].find_element(By.ID, "login-username").clear()
-            globals()[f"driver{i}"].find_element(By.ID, "login-username").send_keys(b)
-            globals()[f"driver{i}"].find_element(By.ID, "login-password").clear()
-            globals()[f"driver{i}"].find_element(By.ID, "login-password").send_keys(bcacpw[b])
-            globals()[f"driver{i}"].find_element(By.ID, "login-password").send_keys(Keys.ENTER)
+            try:
+                globals()[f"driver{i}"].find_element(By.ID, "login-username").clear()
+                globals()[f"driver{i}"].find_element(By.ID, "login-username").send_keys(b)
+                globals()[f"driver{i}"].find_element(By.ID, "login-password").clear()
+                globals()[f"driver{i}"].find_element(By.ID, "login-password").send_keys(bcacpw[b])
+                globals()[f"driver{i}"].find_element(By.ID, "login-password").send_keys(Keys.ENTER)
+            except StaleElementReferenceException:
+                time.sleep(3)
+                globals()[f"driver{i}"].get("https://accounts.spotify.com/en/login")
 
             time.sleep(5)
             if globals()[f"driver{i}"].current_url == "https://accounts.spotify.com/en/login":
@@ -124,11 +129,12 @@ while True:
         playlistlink = random.choice(playlists)
         try:
             time.sleep(3)
-            globals()[f"driver{i}"].get("https://open.spotify.com/playlist/3BRu1lU97T7uqzZsLDn7e3?si=b7955084bf65451d")
+            globals()[f"driver{i}"].get("https://open.spotify.com/playlist/0OXggKvHeRWcxYQxD2YLpH")
 
-        except TimeoutError:
+        except TimeoutError and WebDriverException:
             print("t")
         l = False
+    counter = {}
     print("cycle")
     for i in range(0, 10):
         songsnumberarr = []
@@ -139,11 +145,14 @@ while True:
                 g = random.randint(1, 6)
                 songsnumberarr.append(g)
 
-                # try:
-                b = WebDriverWait(globals()[f"driver{i}"], 20).until(
-                    EC.visibility_of_element_located((By.XPATH, f"""/html/body/div[1]/div/div/div/div/div[2]/div/div[2]/div/div[1]/div[{g}]/div/div[1]""")))
+                try:
 
-                globals()[f"driver{i}"].execute_script("arguments[0].click();", b)
+                    b = WebDriverWait(globals()[f"driver{i}"], 20).until(
+                      EC.visibility_of_element_located((By.XPATH, f"""/html/body/div[1]/div/div/div/div/div[2]/div/div[2]/div/div[1]/div[{g}]/div/div[1]""")))
+
+                    globals()[f"driver{i}"].execute_script("arguments[0].click();", b)
+                except WebDriverException:
+                    print("Webdriver exception connection timed out")
 
                 # except NoSuchElementException:
                 #    print("play buttton not found", b)
@@ -152,5 +161,11 @@ while True:
                 # except ElementClickInterceptedException as e:
                 #      print(e)
                 #
+        for i in range(0, 6):
+            z = songsnumberarr.count(i)
+            if i in counter:
+                counter[i] += z
+            else:
+                counter[i] = 1
+
         print(songsnumberarr)
-        time.sleep(100)
